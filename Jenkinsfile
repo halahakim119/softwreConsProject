@@ -4,14 +4,16 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/halahakim119/softwreConsProject.git'
+                git credentialsId: 'github-credential-hla', url: 'https://github.com/halahakim119/softwreConsProject.git'
             }
         }
+
         stage('Build') {
             steps {
                 sh 'npm install'
             }
         }
+
         stage('Commit and Push') {
             steps {
                 sh '''
@@ -21,6 +23,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Hello') {
             steps {
                 jiraComment body: 'this comment was sent from Jenkins', issueKey: 'KAN-2'
