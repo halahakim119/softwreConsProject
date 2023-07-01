@@ -4,10 +4,10 @@ pipeline {
     stages {
         stage('Configure SSH') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'github-PAT', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                        sh("git tag -a some_tag -m 'Jenkins'")
-                        sh("git push https://${GIT_USERNAME}:${GIT_PASSWORD}@<REPO> --tags")
+                withCredentials([sshUserPrivateKey(credentialsId: 'github-private-key', keyFileVariable: 'SSH_PRIVATE_KEY', passphraseVariable: '', usernameVariable: 'SSH_USERNAME')]) {
+                    script {
+                        sh('git tag -a some_tag -m "Jenkins"')
+                        sh('git push <REPO> --tags')
                     }
                 }
             }
