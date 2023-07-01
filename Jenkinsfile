@@ -7,7 +7,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'github-private-key', keyFileVariable: 'SSH_PRIVATE_KEY', passphraseVariable: '', usernameVariable: 'SSH_USERNAME')]) {
                     script {
                         sh('git tag -a some_tag -m "Jenkins"')
-                        sh('git push <REPO> --tags')
+                        sh('git push https://github.com/halahakim119/softwreConsProject.git --tags')
                     }
                 }
             }
