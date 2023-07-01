@@ -14,5 +14,17 @@ pipeline {
                 }
             }
         }
+    stage('SSH') {
+                  steps {
+           sshagent (credentials: ['github-private-key']) {
+                sh("""
+                    git tag ${props['DATE_TAG']}
+                    git push --tags
+                """)
+            }
+        }
+        }
+
+        
     }
 }
