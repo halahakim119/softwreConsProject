@@ -1,38 +1,12 @@
-     
-      pipeline {
+pipeline {
     agent any
-    options {
-        skipDefaultCheckout true
-    }
 
     stages {
-
-        stage('Build') {
+        stage('Configure SSH') {
             steps {
-                sh './gradlew build'
+               checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-private-key', url: 'https://github.com/halahakim119/softwreConsProject.git']]){}
             }
         }
 
-        stage('Test') {
-            steps {
-                sh './gradlew test'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                sh './deploy.sh'
-            }
-        }
-    }
-
-    post {
-        always {
-            githubStatus context: 'continuous-integration/jenkins', state: 'success'
-            if (env.CHANGE_ID) {
-                githubComment message: "The pipeline completed successfully!"
-                githubLabel labels: ['approved']
-            }
-        }
     }
 }
