@@ -2,6 +2,14 @@ pipeline {
     agent any
 
     stages {
+        stage('Configure SSH') {
+            steps {
+                sshagent(['github-private-key']) {
+                   
+                }
+            }
+        }
+
         stage('Commit') {
             steps {
                 sh 'git add .'
