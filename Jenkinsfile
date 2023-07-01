@@ -12,7 +12,7 @@ pipeline {
             steps {
                 // Perform your build steps here
                 // For example:
-                bat 'npm install'  // Run npm install using the Windows shell
+                bat 'npm ci'  // Run npm ci using the Windows shell
                 bat 'npm run build' // Run npm run build using the Windows shell
             }
         }
