@@ -27,7 +27,7 @@ pipeline {
                     bat 'git add -u' // Add modified/deleted files
                     bat 'git add -A' // Add untracked files
                     bat 'git commit -m "Jenkins pipeline commit"'
-                    bat 'git push origin main' // Push changes to the main branch
+                    bat 'git push */main' // Push changes to the main branch
                 }
             }
         }
