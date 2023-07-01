@@ -4,23 +4,10 @@ pipeline {
     stages {
         stage('Configure SSH') {
             steps {
-                sshagent(credentials:['github-private-key']) {
-                   
-                }
+               checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-private-key', url: 'https://github.com/halahakim119/softwreConsProject.git']])
             }
         }
 
-        stage('Commit') {
-            steps {
-                sh 'git add .'
-                sh 'git commit -m "Commit message"'
-            }
-        }
-
-        stage('Push') {
-            steps {
-                sh 'git push origin main'
-            }
-        }
+    
     }
 }
