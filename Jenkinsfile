@@ -6,7 +6,7 @@ pipeline {
             steps {
                 checkout([
                     $class: 'GitSCM',
-                    branches: [[name: '*/main']],
+                    branches: [[name: '*/master']],
                     userRemoteConfigs: [[credentialsId: 'github-private-key', url: 'https://github.com/halahakim119/softwreConsProject.git']],
                     extensions: [[$class: 'CleanBeforeCheckout']]
                 ])
@@ -27,7 +27,7 @@ pipeline {
                     bat 'git add -u' // Add modified/deleted files
                     bat 'git add -A' // Add untracked files
                     bat 'git commit -m "Jenkins pipeline commit"'
-                    bat 'git push main' // Push changes to the main branch
+                    bat 'git push origin master' // Push changes to the master branch
                 }
             }
         }
