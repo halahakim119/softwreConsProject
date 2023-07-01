@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Configure SSH') {
             steps {
-                sshagent(['github-private-key']) {
+                sshagent(credentials:['github-private-key']) {
                    
                 }
             }
