@@ -2,25 +2,12 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Configure SSH') {
             steps {
-                // Checkout your source code from Git
-                checkout scm
+               checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-private-key', url: 'https://github.com/halahakim119/softwreConsProject.git']])
             }
         }
-        stage('Build') {
-            steps {
-                // Perform your build steps here
-                // For example:
-                bat 'npm ci'  // Run npm ci using the Windows shell
-                bat 'npm run build' // Run npm run build using the Windows shell
-            }
-        }
-        stage('Run in Background') {
-            steps {
-                // Run your command in the background using the Windows 'start' command
-                bat 'start /B cmd /C "your-command"'
-            }
-        }
+
+    
     }
 }
