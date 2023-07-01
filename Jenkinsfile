@@ -1,26 +1,38 @@
-pipeline {
+     
+      pipeline {
     agent any
+    options {
+        skipDefaultCheckout true
+    }
 
     stages {
-        stage('Configure SSH') {
+
+        stage('Build') {
             steps {
-            
-                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-private-key', url: 'https://github.com/halahakim119/softwreConsProject.git']])
-                   
-                
+                sh './gradlew build'
             }
-        }
-    stage('SSH') {
-                  steps {
-           sshagent (credentials: ['github-private-key']) {
-                sh("""
-                    git tag ${props['DATE_TAG']}
-                    git push --tags
-                """)
-            }
-        }
         }
 
-        
+        stage('Test') {
+            steps {
+                sh './gradlew test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh './deploy.sh'
+            }
+        }
+    }
+
+    post {
+        always {
+            githubStatus context: 'continuous-integration/jenkins', state: 'success'
+            if (env.CHANGE_ID) {
+                githubComment message: "The pipeline completed successfully!"
+                githubLabel labels: ['approved']
+            }
+        }
     }
 }
