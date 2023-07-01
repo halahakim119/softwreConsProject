@@ -24,6 +24,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'github-private-key', keyFileVariable: 'SSH_KEY')]) {
                     bat 'git config --global user.email "hakimhala3@gmail.com"'
                     bat 'git add .'
+                    bat 'git add -u' // Add modified/deleted files
                     bat 'git commit -m "Jenkins pipeline commit"'
                     bat 'git push'
                 }
