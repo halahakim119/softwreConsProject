@@ -22,8 +22,7 @@ pipeline {
         stage('Push to GitHub') {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'github-private-key', keyFileVariable: 'SSH_KEY')]) {
-                    bat 'git config --global user.email "jenkins@example.com"'
-                    bat 'git config --global user.name "Jenkins"'
+                    bat 'git config --global user.email "hakimhala3@gmail.com"'
                     bat 'git add .'
                     bat 'git commit -m "Jenkins pipeline commit"'
                     bat 'git push'
