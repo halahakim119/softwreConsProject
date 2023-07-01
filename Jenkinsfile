@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     stages {
         stage('Checkout') {
             steps {
@@ -18,6 +19,11 @@ pipeline {
                     git commit -m "Commit message"
                     git push origin main
                 '''
+            }
+        }
+        stage('Hello') {
+            steps {
+                jiraComment body: 'this comment was sent from Jenkins', issueKey: 'KAN-2'
             }
         }
     }
