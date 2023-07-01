@@ -1,26 +1,18 @@
 pipeline {
     agent any
-
     stages {
-        stage('Configure SSH') {
+        stage('Checkout SCM') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [[$class: 'CleanBeforeCheckout']], userRemoteConfigs: [[credentialsId: 'github-private-key', url: 'https://github.com/halahakim119/softwreConsProject.git']]])
+                // Checkout the repository
+                checkout scm
             }
         }
-
-        stage('Commit and Push') {
+        stage('Build and Run') {
             steps {
-                script {
-                    gitCommit = sh(script: 'git log --format="%H" -n 1', returnStdout: true).trim()
-                    sh 'git config user.email "hakimhala3@gmail.com"'
-                    sh 'git config user.name "halahakim911"'
-                    sh 'git add .'
-                    sh 'git commit -m "Pipeline commit"'
-                    sh 'git push origin main'
-                }
+                // Build and run the application
+                bat 'start npm install' // Use the 'bat' step to execute Windows batch commands
+                bat 'start npm run start'
             }
         }
-
-    
     }
 }
