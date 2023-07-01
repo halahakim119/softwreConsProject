@@ -2,13 +2,24 @@ pipeline {
     agent any
 
     stages {
-        stage('Configure SSH') {
+        stage('Checkout') {
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'github-private-key', keyFileVariable: 'SSH_PRIVATE_KEY', passphraseVariable: '', usernameVariable: 'SSH_USERNAME')]) {
-                    sh 'git commit -am "hello my commit message"'
-                    sh 'GIT_SSH_COMMAND="ssh -i $key"'
-                    sh 'git push git@bitbucket.psr.io/scme/ci/ci.git aTag'
-                }
+                // Checkout your source code from Git
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                // Perform your build steps here
+                // For example:
+                bat 'npm install'  // Run npm install using the Windows shell
+                bat 'npm run build' // Run npm run build using the Windows shell
+            }
+        }
+        stage('Run in Background') {
+            steps {
+                // Run your command in the background using the Windows 'start' command
+                bat 'start /B cmd /C "your-command"'
             }
         }
     }
