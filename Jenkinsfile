@@ -12,8 +12,8 @@ pipeline {
             steps {
                 script {
                     gitCommit = sh(script: 'git log --format="%H" -n 1', returnStdout: true).trim()
-                    sh 'git config user.email "your-email@example.com"'
-                    sh 'git config user.name "Your Name"'
+                    sh 'git config user.email "hakimhala3@gmail.com"'
+                    sh 'git config user.name "halahakim911"'
                     sh 'git add .'
                     sh 'git commit -m "Pipeline commit"'
                     sh 'git push origin main'
