@@ -8,23 +8,43 @@ pipeline {
             }
         }
 
-        stage('Execute JMeter') {
+        post {
+    always {
+      // Publish JMeter performance test report using the Performance Plugin
+      performanceReport parsers: [[$class: 'JMeterParser', glob: 'C:/Program Files/jmeter/result.jtl']] // Path to the JTL report file
+    }
+  }
+    }
+}
+pipeline {
+    agent any
+
+    stages {
+        stage('jmeter') {
             steps {
-                bat '''
-                c:\
-                jmeter\bin\jmeter -j imeter save saveservice output_format=xm] -n -t
-                c:\
-                limeter\bin\jenkins. io.inx -1 c:\
-                imeter\reports\jenkins.
-                io.report itl
-                '''
+
+                // Run JMeter test using the JMeter plugin
+                jmeter {
+                    jmeterInstallation('Apache JMeter') // Configure JMeter installation name defined in Jenkins global tools configuration
+                    jmx('C:/Users/msi-pc/OneDrive/Desktop/jenkins.io.jml.jmx') // Path to your JMeter test script
+                    properties([
+                        jtlReports('C:/Program Files/jmeter/result.jtl') // Path to save JTL report file
+                    ])
+                }
             }
         }
-        
-        stage('Publish JMeter Report') {
+
+        stage('Hello') {
             steps {
-                perfReport filterRegex: '', sourceDataFiles: 'TestPlans/MyRun1.jtl'
+                jiraComment body: 'this is a comment by Jenkins', issueKey: 'KAN-2'
             }
+        }
+    }
+
+    post {
+        always {
+            // Publish JMeter performance test report using the Performance Plugin
+            performanceReport parsers: [[$class: 'JMeterParser', glob: 'C:/Program Files/jmeter/result.jtl']] // Path to the JTL report file
         }
     }
 }
