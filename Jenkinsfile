@@ -11,14 +11,13 @@ pipeline {
         stage('JMeter Performance Test') {
             steps {
                 // Run JMeter test using the JMeter plugin
-                jmeter {
-                    jmeterInstallation('Apache JMeter') // Configure JMeter installation name defined in Jenkins global tools configuration
-                    jmx('C:/Users/msi-pc/OneDrive/Desktop/jenkins.io.jmx') // Path to your JMeter test script
-                    properties([
-                        jtlReports([
-                            [pattern: 'C:/Program Files/jmeter/result.jtl'] // Path to save JTL report file
-                        ])
-                    ])
+                script {
+                    jmeter {
+                        jmeterInstallation('Apache JMeter') // Configure JMeter installation name defined in Jenkins global tools configuration
+                        jmx('C:/Users/msi-pc/OneDrive/Desktop/jenkins.io.jmx') // Path to your JMeter test script
+                        flags('-Jjmeter.save.saveservice.output_format=xml') // Optional: Configure JMeter flags as needed
+                        testArgs('-l C:/Program Files/jmeter/result.jtl') // Path to save JTL report file
+                    }
                 }
             }
         }
@@ -27,7 +26,8 @@ pipeline {
     post {
         always {
             // Publish JMeter performance test report using the Performance Plugin
-            performanceReport parsers: [[$class: 'JMeterParser', glob: 'C:/Program Files/jmeter/result.jtl']] // Path to the JTL report file
+            step([$class: 'JUnitResultArchiver', testResults: 'C:/Program Files/jmeter/result.jtl']) // Path to the JTL report file
+            step([$class: 'PerformancePublisher', parsers: [[$class: 'JUnitParser', glob: 'C:/Program Files/jmeter/result.jtl']]]) // Path to the JTL report file
         }
     }
 }
