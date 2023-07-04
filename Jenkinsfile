@@ -26,12 +26,10 @@ pipeline {
             }
         }
 
-         stage('Hello') {
-            steps {
-               jiraComment body: 'this is comment by jenkins', issueKey: 'KAN-2'
-            }
-        }
+        // stage('Hello') {
+        //     steps {
+        //         jiraComment body: 'this is comment by jenkins', issueKey: 'KAN-2'
+        //     }
+        // }
     }
-
- 
 }
