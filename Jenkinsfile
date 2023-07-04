@@ -1,35 +1,79 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-cred')
+    }
+
+    tools {
+        nodejs "nodejs"
+        dockerTool "docker"
+    }
+
     stages {
-        stage('Configure SSH') {
+        stage('Hello') {
             steps {
-                checkout([$class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[
-                        credentialsId: 'github-private-key',
-                        url: 'https://github.com/halahakim119/softwreConsProject.git'
-                    ]]
-                ])
-            }
-        }
-        stage('Build, Test, and Package') {
-            steps {
-                dir('jmeter') {
-                    sh "./mvnw clean install -DskipTests"
-                    sh 'nohup ./mvnw spring-boot:run -Dserver.port=8989 &'
-                    sh "while ! httping -qc1 http://localhost:8989 ; do sleep 1 ; done"
-                    sh "jmeter -Jjmeter.save.saveservice.output_format=xml -n -t src/main/resources/JMeter.jmx -l src/main/resources/JMeter.jtl"
-                    step([$class: 'ArtifactArchiver', artifacts: 'JMeter.jtl'])
-                    sh "pid=\$(lsof -i:8989 -t); kill -TERM \$pid || kill -KILL \$pid"
-                }
+                jiraComment body: 'this is comment by jenkins', issueKey: 'KAN-2'
             }
         }
 
-        // stage('Hello') {
-        //     steps {
-        //         jiraComment body: 'this is comment by jenkins', issueKey: 'KAN-2'
-        //     }
-        // }
+        stage('Install') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('Docker Purne') {
+            steps {
+                sh 'docker image prune -af'
+            }
+        }
+
+        stage('Docker build') {
+            steps {
+                sh 'docker build -t shevop/questionapp:latest .'
+            }
+        }
+
+        stage('Docker login') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u shevop -p $DOCKERHUB_CREDENTIALS_PSW'
+            }
+        }
+
+        stage('Docker push') {
+            steps {
+                sh 'docker push shevop/questionapp:latest'
+            }
+        }
+
+        stage('Execute JMeter') {
+            steps {
+                bat '''
+                c: jmeter \\bin\\jmeter -j imeter save saveservice output_format=xm] -n -t
+                c: limeter \\bin\\jenkins. io.inx -1 c: \\imeter\\ reports\\jenkins.
+                io.report itl
+                '''
+            }
+        }
+           stage('Publish JMeter Report') {
+            steps {
+            
+                perfReport filterRegex: '', sourceDataFiles: 'TestPlans/MyRun1.jtl'
+            
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout'
+        }
     }
 }
